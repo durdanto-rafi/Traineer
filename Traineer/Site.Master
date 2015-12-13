@@ -1,0 +1,237 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Traineer.SiteMaster" %>
+
+<%@ Import Namespace="System.Data" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> Traineer</title>
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/icons/favicon.ico">
+    <link rel="apple-touch-icon" href="images/icons/favicon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/icons/favicon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/icons/favicon-114x114.png">
+
+
+    <!--Loading bootstrap css-->
+    <link type="text/css" rel="stylesheet" href="Content/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="Content/main.css">
+    <link type="text/css" rel="stylesheet" href="Content/style-responsive.css">
+    <link type="text/css" rel="stylesheet" href="Content/custom.css">
+    <link type="text/css" rel="stylesheet" href="Content/all.css">
+
+    <!--begin mmenu css-->
+    <link href="Content/mmenu/jquery.mmenu.css" rel="stylesheet" />
+    <link href="Content/mmenu/jquery.mmenu.dragopen.css" rel="stylesheet" />
+    <!--end mmenu css-->
+
+    <!--Loading datepicker css-->
+    <link href="Content/jquery-ui.css" rel="stylesheet" />
+
+    <script src="Scripts/jquery-2.1.4.js"></script>
+    <script src="Scripts/mmenu/jquery.mmenu.min.js"></script>
+    <script src="Scripts/mmenu/jquery.mmenu.dragopen.min.js"></script>
+    <script src="Scripts/mmenu/jquery.mmenu.fixedelements.min.js"></script>
+
+    <!--begin mmenu js-->
+    <script type="text/javascript">
+        $(function () {
+            var $menu = $('nav#menu'),
+                $html = $('html, body');
+
+            $menu.mmenu({
+                dragOpen: true
+            });
+
+            var $anchor = false;
+            $menu.find('li > a').on(
+                'click',
+                function (e) {
+                    $anchor = $(this);
+                }
+            );
+
+            var api = $menu.data('mmenu');
+            api.bind('closed',
+                function () {
+                    if ($anchor) {
+                        var href = $anchor.attr('href');
+                        $anchor = false;
+
+                        if (href.slice(0, 1) == '#') {
+                            $html.animate({
+                                scrollTop: $(href).offset().top
+                            });
+                        }
+                    }
+                }
+            );
+        });
+    </script>
+    <!--end mmenu js-->
+</head>
+<body class="main-body">
+    <div id="page">
+        <form runat="server">
+            <asp:ScriptManager ID="MasterScriptManager" runat="server" EnablePartialRendering="true">
+            </asp:ScriptManager>
+            <!--BEGIN TOPBAR-->
+            <div id="header-topbar-option-demo" class="page-header-topbar">
+                <nav id="topbar" role="navigation" style="margin-bottom: 0;" data-step="3" class="navbar navbar-default navbar-static-top">
+                    <div class="navbar-header">
+                        <button type="button" data-toggle="collapse" data-target=".sidebar-collapse" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                        <%-- <a id="logo" href="Default.aspx" class="navbar-brand">
+                            <img class="logo-image" src="images/logo/concord-logo.png" /></a>--%>
+                    </div>
+                    <div class="topbar-main">
+                        <a id="menu-toggle" href="#menu" class="hidden-xs"><i class="fa fa-bars"></i></a>
+                        <div class="news-update-box hidden-xs">
+                        </div>
+                        <ul class="nav navbar navbar-top-links navbar-right mbn">
+                            <span style="color: #fff;">Logged in as
+                                        <asp:Label runat="server" ID="lblUser" /></span>
+                            <li class="dropdown topbar-user"><a data-hover="dropdown" href="#" class="dropdown-toggle">
+                                <asp:Image ID="ImgUser" alt="" class="img-responsive img-circle" runat="server"
+                                    ImageUrl="~/App_Images/CC_logoW1.jpg"
+                                    AlternateText="Image Not Found" />
+                                &nbsp;<span class="hidden-xs">
+                                    <asp:Label ID="lblUsername" runat="server" /></span>&nbsp;<span class="caret"></span></a>
+                                <ul class="dropdown-menu dropdown-user pull-right">
+                                    <li>
+                                        <%--<a href="Login.aspx">Logout</a>--%>
+                                        <asp:LinkButton runat="server" Text="Logout" ID="lblLogout" OnClick="lblLogout_OnClick"></asp:LinkButton>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+            <!--END TOPBAR-->
+            <div class="content" id="content wrapper">
+                <!--BEGIN PAGE WRAPPER-->
+                <div id="page-wrapper">
+                    <!--BEGIN MAIN CONTENT-->
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server">
+                    </asp:ContentPlaceHolder>
+                    <!--END MAIN CONTENT-->
+                </div>
+                <!--END PAGE WRAPPER-->
+            </div>
+            <!--BEGIN FOOTER-->
+            <div id="footer">
+                <div class="copyright">
+                    <a href="">&copy; <%: DateTime.Now.Year %> - Powered By IT</a>
+                </div>
+            </div>
+            <!--END FOOTER-->
+
+            <script src="Scripts/bootstrap.min.js"></script>
+            <script src="Scripts/bootstrap-hover-dropdown.js"></script>
+            <!--CORE JAVASCRIPT-->
+            <script>
+                function MaskMoney(obj, evt, deci_point) {
+                    var parts = obj.value.split('.');
+                    var tabkey = evt.keyCode;
+                    switch (evt.keyCode) {
+                        // Digits 0..9             
+                        case 9:
+                        case 96:
+                        case 97:
+                        case 98:
+                        case 99:
+                        case 100:
+                        case 101:
+                        case 102:
+                        case 103:
+                        case 104:
+                        case 105:
+                        case 48:
+                        case 49:
+                        case 50:
+                        case 51:
+                        case 52:
+                        case 53:
+                        case 54:
+                        case 55:
+                        case 56:
+                        case 57:
+                            // Accept only one 14 integer digits and 2 decimal places
+                            if (tabkey != 9) {
+                                if (parts.length < 2)
+                                    return (parts[0].length < 14)
+                                else
+                                    return (parts[1].length < deci_point);
+                                break;
+                            }
+                            // Decimal point
+                        case 190:
+                            // Accept only one single point
+                            if (tabkey != 9) {
+                                return (parts.length < deci_point);
+                                break;
+                            }
+                            // Backspace (music), Delete (46)
+                        case 8:
+                        case 46:
+                            return (parts.length > 0);
+                            break;
+
+                            // Left (37), Right (39) arrow keys             
+                            // Add here cases for any other key code you want to accept             
+                        case 37:
+                        case 39:
+                            return true;
+                            break;
+
+                        case 110:
+                            // Accept only one single point
+                            return (parts.length < 2);
+                            break;
+                            // Anything else is invalid             
+                        default:
+                            return false;
+                    }
+                }
+            </script>
+            <!-- BEGIN DISABLE ENTER KEY -->
+            <script>
+                function ignoreEnter(event) {
+
+                    if (event.keyCode == 13) {
+                        return false;
+                    }
+                }
+            </script>
+            <!-- END DISABLE ENTER KEY -->
+        </form>
+    </div>
+
+    <!--BEGIN MAIN MENU-->
+    <nav id="menu">
+        <ul>
+            <% foreach (DataRow parent in MenuData.Rows)
+               { %><li><a href="<%= parent[1].ToString() %>"><%= parent[0].ToString() %>
+               </a>
+               </li>
+            <% } %>
+        </ul>
+    </nav>
+    <!--END MAIN MENU-->
+</body>
+</html>
+
+
+
+
